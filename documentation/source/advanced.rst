@@ -187,6 +187,7 @@ define *.ModelDesign.xml* files, which can then be processed with the `UA-ModelC
    mounting_namespace
 
 .. _Advanced Build custom OPC UA Servers:
+
 Advanced: Build custom OPC UA Servers
 =========================================
 Similar to the intermediate tutorial, all servers will be started from one executable based on thread. To start several resource server from the same script,
@@ -1013,16 +1014,16 @@ Start the Application with Docker Images
 An easy approach to start the application and start processes on the servers created within this tutorial are docker container that are available within the GitHub package registry. The application ca be started in 3 steps,
 first the docker container of the device registry has to be started. Second, the shop floor build within this tutorial has to be started. In the last step, the process agent is started, which then executes the PFDL of the Demonstration Scenario.
 
-Step 1: Start the Device Registry
-.................................
+Step 1: Start the Device Registry Docker
+........................................
 For the device registry, a pre-build docker container is available which can be started with:
 
 .. code-block:: c
 
     docker run -p 8000:8000 --add-host host.docker.internal:host-gateway ghcr.io/swap-it/demo-scenario/device_registry:latest
 
-Step 2: Start the Shop Floor Server
-....................................
+Step 2: Start the Shop Floor Server Docker
+...........................................
 Since docker container have an individual networking, a minor modification on the JSON configuration files has to be performed to enable the connection between the docker container and the shop floor servers.
 Here, the key **resource_ip** has to be changed to resource_ip: "host.docker.internal".
 
@@ -1048,7 +1049,86 @@ In case of an individual implementation of this tutorial, the shop floor can be 
 
 .. code-block:: c
 
-    cd working directory
+    cd demo-scenario
+    mkdir build && cd build
+    cmake ..
+    make
+    /*start the executable*/
+    ./swap_server
+
+In case that the shop floor should be started from the tutorial implementation, execute the following steps:
+
+.. code-block:: c
+
+    git clone https://github.com/swap-it/demo-scenario.git
+    cd demo-scenario/Tutorials/advanced
+    mkdir build && cd build
+    cmake ..
+    make
+    /*start the executable*/
+    ./swap_server
+
+
+Step 3: Start the Process Agent Docker
+......................................
+Since the code basis of the process agent in not available yet, we provide a docker compose file which starts the missing application, in fact the process agent and the dashboard, in a docker compose project. A corresponding
+Docker-compose.yaml file is provided in the `advanced directory <https://github.com/swap-it/demo-scenario/tree/main/Tutorials/advanced>`_.
+This docker application can be started with the following steps, so that the beginner tutorial PFDL and the corresponding process is executed on the resource, which is implemented in this tutorial:
+
+.. code-block:: c
+
+    git clone https://github.com/swap-it/demo-scenario.git
+    cd demo-scenario/Tutorials/advanced
+    docker-compose up
+
+
+Start the Application from the Scratch
+--------------------------------------
+
+In this section, each of the dependent SWAP-IT software applications are used. This includes the `swap-it-dashboard <https://github.com/iml130/swap-it-dashboard>`_ the `swap-it-process-agent <https://github.com/FraunhoferIOSB/swap-it-execution-engine>`_
+and the `swap-it-registry-module <https://github.com/FraunhoferIOSB/swap-it-registry-module>`_, which are locally executed. Please consider the corresponding installation requirement of the corresponding code bases.
+
+Step 1: Start the Registry Module
+.................................
+
+.. code-block:: c
+
+    git clone https://github.com/FraunhoferIOSB/swap-it-registry-module
+    cd swap-it-registry-module
+    mkdir build && cd build
+    cmake ..
+    make
+    ./registry_module
+
+
+Step 2: Start the Shop Floor Server
+....................................
+Since all resources are executed locally on a single device, the ip address of each server, as well as the url of the device_registry within the JSON-config have to be adjusted, so that the docker specific commands are removed and replaced
+wih the actual url of the device.
+
+The configuration file for the milling server would then look like this:
+
+.. code-block:: c
+
+    {
+      //mandatory
+      application_name: "milling_dr1",
+      resource_ip: "localhost",
+      port: "4071",
+      module_type: "MillingModuleType",
+      module_name: "MillingModule",
+      service_name: "Milling",
+      //optional
+      device_registry:"opc.tcp://localhost:8000"
+    }
+
+However, this step has to be repeated for all configurations that are defined in section `Advanced Writing a JSON-configuration File`_.
+
+In case of an individual implementation of this tutorial, the shop floor can be started with the following steps:
+
+.. code-block:: c
+
+    cd demo-scenario
     mkdir build && cd build
     cmake ..
     make
@@ -1070,12 +1150,10 @@ In case that the shop floor should be started from the tutorial implementation, 
 
 Step 3: Start the Process Agent
 ...............................
-Since the code basis of the process agent in not available yet, we provide a docker compose file which starts the missing application, in fact the process agent and the dashboard, in a docker compose project. A corresponding
-Docker-compose.yaml file is provided in the `advanced directory <https://github.com/swap-it/demo-scenario/tree/main/Tutorials/advanced>`_.
-This docker application can be started with the following steps, so that the beginner tutorial PFDL and the corresponding process is executed on the resource, which is implemented in this tutorial:
+The process agent can be started with:
 
 .. code-block:: c
 
-    git clone https://github.com/swap-it/demo-scenario.git
-    cd demo-scenario/Tutorials/advanced
-    docker-compose up
+    git clone https://github.com/FraunhoferIOSB/swap-it-execution-engine
+    cd swap-it-execution-engine
+    python3 main.py "opc.tcp://localhost:4840" "./PFDL_Examples/advanced.pfdl" "dashboard_host_address"="http://localhost:8080" "log_info"=True "device_registry_url"="opc.tcp://localhost:8000" "number_default_clients"=5

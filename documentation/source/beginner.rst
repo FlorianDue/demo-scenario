@@ -368,7 +368,7 @@ server can be instantiated with the open62541 swap server template's function UA
 
 Beginner: Build the Server Executable
 -------------------------------------
-After the code is completed, it is now possible to compile the server executable. For this to be achieved, create a build directory within the working directory and compile the server with the cmake and make command.
+After the code is completed, it is now possible to compile the server executable. For this to be achieved, a build directory within the working directory must be created and the server executable can be compiled with the cmake and make command.
 
 .. code-block:: c
 
@@ -394,8 +394,13 @@ In case that the shop floor should be started from the tutorial implementation, 
 Beginner: Execute the PFDL with an Execution Engine
 ===================================================
 
-Since the code basis of the process agent in not available yet, we provide a docker compose file which starts the missing application, in fact the process agent and the dashboard, in a docker compose project. A corresponding
-Docker-compose.yaml file is provided in the `beginner directory <https://github.com/swap-it/demo-scenario/tree/main/Tutorials/beginner>`_.
+Two approaches are possible to test the server of the beginner tutorial with a process agent. First, the process Agent Repository can be cloned and locally executed, or a pre-build docker-environment can be deployed.
+
+Beginner: Start from Docker
+----------------------------
+
+For the Docker approach, an image of the process agent and the dashboard are provided. A corresponding
+Docker-compose.yaml file is available in the `beginner directory <https://github.com/swap-it/demo-scenario/tree/main/Tutorials/beginner>`_.
 This docker application can be started with the following steps, so that the beginner tutorial PFDL and the corresponding process is executed on the resource, which is implemented in this tutorial:
 
 .. code-block:: c
@@ -403,3 +408,38 @@ This docker application can be started with the following steps, so that the beg
     git clone https://github.com/swap-it/demo-scenario.git
     cd demo-scenario/Tutorials/beginner
     docker-compose up
+
+Beginner: Start from Scratch
+----------------------------
+In this section, both the `swap-it-dashboard <https://github.com/iml130/swap-it-dashboard>`_ and the `swap-it-process-agent <https://github.com/FraunhoferIOSB/swap-it-execution-engine>`_ are locally executed. Please consider
+the corresponding installation requirement of the corresponding code bases.
+
+The swap-it-dashboard can be simply started with:
+
+.. code-block:: python
+
+    #clone the repository
+    git clone https://github.com/iml130/swap-it-dashboard.git
+    cd swap-it-dashboard
+    python3 application.py
+
+Then the swap-it-dashboard can be opened with **http://localhost:8080**
+
+Next, a process agent can be launched:
+
+.. code-block:: python
+
+    #clone the repository
+    https://github.com/FraunhoferIOSB/swap-it-execution-engine
+    cd swap-it-execution-engine
+    python3 main.py "opc.tcp://localhost:4841" "./PFDL_Examples/beginner.pfdl" "dashboard_host_address"="http://localhost:8080" "log_info"=True "number_default_clients"=5
+
+Please consider to adjust the ResourceAssignment Structure within the PFDL description as followed:
+
+.. code-block:: json
+
+    ResourceAssignment
+    {
+        "job_resource":"opc.tcp://localhost:4840"
+    }
+
