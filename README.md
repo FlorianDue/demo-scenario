@@ -125,6 +125,16 @@ At least the following build flags are required for the open62541 OPC UA SDK:
 
 for the open62541 SDK is required.
 
+## Related Projects
+Since the SWAP-IT Regitry Module is part of the SWAP-IT Architecture, its application is linked to other SWAP-IT projects. Here are some other relevant repositories:
+
+- SWAP-IT Registry Module: https://github.com/FraunhoferIOSB/swap-it-registry-module
+- SWAP-IT open62541 server-template: https://github.com/FraunhoferIOSB/swap-it-open62541-server-template
+- SWAP-IT Execution Engine: https://github.com/FraunhoferIOSB/swap-it-execution-engine
+- PFDL Scheduler: https://github.com/iml130/pfdl
+- SWAP-IT Dashboard: https://github.com/iml130/swap-it-dashboard
+- Common Information Model: https://github.com/FraunhoferIOSB/swap-it-common-information-model
+
 ## Build the Tutorials
 
     #clone this repository
