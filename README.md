@@ -15,7 +15,8 @@ concepts. In this context, a process to manufacture an industrial traffic light 
 information about the SWAP-IT architecture, the Demonstration scenario and the SWAP-IT software modules can be
 found in the following sections of this documentation.
 
-
+## Documentation 
+An extensive introduction into SWAP-IT and its software modules can be found in the documentation (https://swap-it.github.io/demo-scenario/).
 
 ## SWAP-IT Architecture
 
@@ -101,23 +102,6 @@ The development status and the interaction of these components is shown in the f
     <img src="documentation/source/images/img_1.png" alt="">
 </p>
 
-An extensive introduction into SWAP-IT and its software modules can be found in the documentation.
-
-
-
-## Documentation
-To build the documentation, sphinx and the sphinx rtd theme are required. Both can be installed with:
-
-    sphinx sphinx-rtd-theme myst_parser rst2pdf
-
-Build the documentation:
-
-    cd demo-scenario
-    #html
-    sphinx-build -M html documentation/source/ documentation/build/html
-    #pdf
-    sphinx-build -b pdf documentation/source/ documentation/build/pdf/
-
 
 ## Docker
 Since not all software components required to start the demonstration scenario are available yet, we provide a pre-build docker container
@@ -132,6 +116,8 @@ with all components that can be started with the provided docker-compose.yaml fi
 
 This repository requires a local installation of the open62541 OPC UA SDK (https://github.com/open62541/open62541)
 version 1.3.10 and a local installation of the swap it open62541 server template (https://github.com/FraunhoferIOSB/swap-it-open62541-server-template)
+
+**Important Note:** The code is also executable with open62541 version 1.4.6
 
 At least the following build flags are required for the open62541 OPC UA SDK:
 
@@ -153,3 +139,16 @@ for the open62541 SDK is required.
     ./beginner_tutorial
     #./intermediate_tutorial
     #./swap_server
+
+## Build the Documentation
+To build the documentation, sphinx and the sphinx rtd theme are required. Both can be installed with:
+
+    sphinx sphinx-rtd-theme myst_parser rst2pdf
+
+Build the documentation:
+
+    cd demo-scenario
+    #html
+    sphinx-build -M html documentation/source/ documentation/build/html
+    #pdf
+    sphinx-build -b pdf documentation/source/ documentation/build/pdf/
